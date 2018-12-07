@@ -1,0 +1,105 @@
+title: Home
+views:
+  - id: 0  # Automatically created id
+    title: Home
+    cards:
+      - id: 3e358485406345cf8931551ecd301ce0  # Automatically created id
+        type: entity-filter
+        entities:
+          - device_tracker.iphone
+          - device_tracker.mariasiphone
+          - device_tracker.briansiphone
+          - device_tracker.karindasiphone
+          - device_tracker.staceysphone
+          - device_tracker.kattasiphone
+        state_filter:
+          - home
+        card:
+          type: glance
+          title: Who's here
+          show_state: false
+          show_name: false
+      - id: e41ea9756e2444e49dbc9830278fe3f1  # Automatically created id
+        type: entity-filter
+        entities:
+          - entity: switch.laundry_light
+            tap_action: toggle
+          - entity: switch.stair_lights
+            tap_action: toggle
+          - entity: light.lounge_1
+            tap_action: toggle
+          - entity: light.lounge_2
+            tap_action: toggle
+        state_filter:
+          - off
+        card:
+          type: glance
+          title: What's Off
+      - id: 0f34d4100c154ab3982a658a8ea3525a  # Automatically created id
+        type: entity-filter
+        entities:
+          - entity: switch.laundry_light
+            tap_action: toggle
+          - entity: switch.stair_lights
+            tap_action: toggle
+          - entity: light.lounge_1
+            tap_action: toggle
+          - entity: light.lounge_2
+            tap_action: toggle
+        state_filter:
+          - on
+        card:
+          type: glance
+          title: What's On
+      - id: 1bcd42b0c18f4f1fb38aa26689ae6ef2  # Automatically created id
+        type: weather-forecast
+        entity: weather.openweathermap
+      - id: d963a2b0f8c14be1b1bfb55f2be568b4  # Automatically created id
+        type: glance
+        entities:
+          - entity: sensor.bom_geelong_air_temp_c
+            name: Outside
+          - sensor.lounge_temp
+          - sensor.laundry_ceiling_temperature
+      - id: 76ef79602d5b426c9c59f223bc97f8b6  # Automatically created id
+        type: horizontal-stack
+        cards:
+          - type: gauge
+            entity: sensor.power_usage
+            title: usage
+            max: 5000
+            severity:
+              green: 0
+              yellow: 1000
+              red: 2000
+          - type: gauge
+            entity: sensor.power_solar
+            title: Solar
+            max: 5000
+            severity:
+              red: 0
+              yellow: 100
+              green: 2000
+
+  - id: 1  # Automatically created id
+    title: Map
+    cards:
+      - id: c6b43a1cb5f442f1aa0337428802fb7f  # Automatically created id
+        type: map
+        entities:
+          - device_tracker.mariasiphone
+          - device_tracker.iphone
+          - zone.home
+
+  - id: 2  # Automatically created id
+    title: Lounge
+    cards:
+      - type: entities
+        id: 1235
+        entities:
+          - entity: switch.moretti_fan
+          - entity: switch.moretti_fan_swing_lamp
+          - entity: light.lounge_1
+          - entity: light.lounge_2
+          - entity: sensor.lounge_temp
+        title: Lounge

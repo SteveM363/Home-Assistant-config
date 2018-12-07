@@ -1,0 +1,47 @@
+### Sensors ###
+- platform: bom
+  station: "IDV60801.94857"
+  name: "Geelong"
+  monitored_conditions:
+    - apparent_t
+    - air_temp
+    - rel_hum
+    - wind_spd_kmh
+   
+ ### Solar - emonCMS
+- platform: mqtt
+  name: "Power Solar"
+  state_topic: "power/solar"
+  unit_of_measurement: "W"
+  expire_after: 60
+- platform: mqtt
+  name: "Power Export"
+  state_topic: "power/export"
+  unit_of_measurement: "W"
+  expire_after: 60
+- platform: mqtt
+  name: "Power Usage"
+  state_topic: "power/usage"
+  unit_of_measurement: "W"
+  expire_after: 60  
+- platform: mqtt
+  name: "Voltage"
+  state_topic: "power/voltage"
+  unit_of_measurement: "V"
+  expire_after: 60
+### Lounge Temp ###
+- platform: mqtt
+  name: "Lounge Temp."
+  unit_of_measurement: "°C"
+  state_topic: "Nodemcu1/fromesp/auto_temperature"
+
+- platform: mqtt
+  name: Laundry Ceiling Temperature
+  state_topic: skylight/sensor/laundry_ceiling_temperature/state
+  unit_of_measurement: "°C"
+  availability_topic: skylight/status
+- platform: mqtt
+  name: Laundry Ceiling Humidity
+  unit_of_measurement: "%"
+  state_topic: skylight/sensor/laundry_ceiling_humidity/state
+  availability_topic: skylight/status

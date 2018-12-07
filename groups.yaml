@@ -1,0 +1,42 @@
+lounge_room:
+  name: Lounge
+  control: hidden
+  entities:
+    - light.lounge_1
+    - light.lounge_2
+    - sensor.lounge_temp
+    
+power:
+   name: Power
+   control: hidden
+   entities:
+     - sensor.power_usage
+     - sensor.power_solar
+     - sensor.power_export
+     - sensor.voltage
+     - switch.solardisplayred
+     - switch.solardisplayblue
+     - switch.solardisplayyellow
+     
+stalker_mode:
+  name: Stalker Mode
+  control: hidden
+  entities:
+    - device_tracker.iphone
+    - device_tracker.mariasiphone
+    - device_tracker.briansiphone
+    - device_tracker.karindasiphone
+    - device_tracker.staceysphone
+    - device_tracker.kattasiphone
+
+environment:
+  name: Environment
+  control: hidden
+  entities:
+    - sensor.bom_geelong_wind_speed_kmh
+    - sensor.bom_geelong_feels_like_c
+    - sensor.bom_geelong_relative_humidity
+    - sensor.bom_geelong_air_temp_c
+    - sensor.lounge_temp
+    - sensor.laundry_ceiling_temperature
+    - sensor.laundry_ceiling_humidity

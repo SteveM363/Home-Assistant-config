@@ -1,0 +1,127 @@
+- id: '1541333361628'
+  alias: Solar Power Light On
+  trigger:
+  - above: '2800'
+    entity_id: sensor.power_solar
+    platform: numeric_state
+  condition: []
+  action:
+  - data:
+      entity_id: switch.solardisplayblue
+    service: switch.turn_on
+- id: '1541333361627'
+  alias: Solar Power Light Off
+  trigger:
+  - below: '2700'
+    entity_id: sensor.power_solar
+    platform: numeric_state
+  condition: []
+  action:
+  - data:
+      entity_id: switch.solardisplayblue
+    service: switch.turn_off
+- id: '1541333654749'
+  alias: Export Power Light On
+  trigger:
+  - below: '-2400'
+    entity_id: sensor.power_export
+    platform: numeric_state
+  condition: []
+  action:
+  - data:
+      entity_id: switch.solardisplayyellow
+    service: switch.turn_on
+- id: '1541333654748'
+  alias: Export Power Light Off
+  trigger:
+  - above: '-2300'
+    entity_id: sensor.power_export
+    platform: numeric_state
+  condition: []
+  action:
+  - data:
+      entity_id: switch.solardisplayyellow
+    service: switch.turn_off
+- id: '1541333654739'
+  alias: Usage Power Light On
+  trigger:
+  - above: '2400'
+    entity_id: sensor.power_usage
+    platform: numeric_state
+  condition: []
+  action:
+  - data:
+      entity_id: switch.solardisplayred
+    service: switch.turn_on
+- id: '1541333654'
+  alias: Usage Power Light Off
+  trigger:
+  - below: '2300'
+    entity_id: sensor.power_usage
+    platform: numeric_state
+  condition: []
+  action:
+  - data:
+      entity_id: switch.solardisplayred
+    service: switch.turn_off
+- id: '1543927602538'
+  alias: Startup
+  trigger:
+  - event: start
+    platform: homeassistant
+  condition: []
+  action:
+  - data:
+      payload: go
+      topic: ha_start
+    service: mqtt.publish
+- id: '1543929735147'
+  alias: Skylight On
+  trigger:
+  - above: '100'
+    entity_id: sensor.power_solar
+    platform: numeric_state
+  condition: []
+  action:
+  - data:
+      entity_id: switch.solar_skylight
+    service: switch.turn_on
+- id: '1543929843183'
+  alias: Skylight Off
+  trigger:
+  - below: '95'
+    entity_id: sensor.power_solar
+    platform: numeric_state
+  condition: []
+  action:
+  - data:
+      entity_id: switch.solar_skylight
+    service: switch.turn_off
+- id: '1544163642043'
+  alias: Maria Home
+  trigger:
+  - entity_id: device_tracker.mariasiphone
+    from: not_home
+    platform: state
+    to: home
+  - entity_id: device_tracker.mariasiphone
+    event: enter
+    platform: zone
+    zone: zone.home
+  condition: []
+  action:
+  - data:
+      entity_id: input_boolean.maria_home
+    service: input_boolean.turn_on
+- id: '1544163755517'
+  alias: Maria Leaving
+  trigger:
+  - entity_id: device_tracker.mariasiphone
+    from: home
+    platform: state
+    to: not_home
+  condition: []
+  action:
+  - data:
+      entity_id: input_boolean.maria_home
+    service: input_boolean.turn_off
