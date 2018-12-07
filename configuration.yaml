@@ -2,8 +2,8 @@ homeassistant:
   # Name of the location where Home Assistant is running
   name: Home
   # Location required to calculate the time the sun rises and sets
-  latitude: -38.161744
-  longitude: 144.55609
+  latitude: !secret lat
+  longitude: !secret lon
   # Impacts weather/sunrise data (altitude above sea level in meters)
   elevation: 0
   # metric for Metric, imperial for Imperial
@@ -27,7 +27,6 @@ config:
 
 # Uncomment this if you are using SSL/TLS, running in Docker container, etc.
 http:
-#   base_url: ha.vicbt.dnsalias.com:8123
   api_password: !secret api_password
 
 # Checks for available updates
@@ -65,8 +64,8 @@ map:
 
 zone:
   - name: Home
-    latitude: -38.161744
-    longitude: 144.55609
+    latitude: !secret lat
+    longitude: !secret lon
     radius: 150
     icon: mdi:home
   - name: Mums
@@ -105,11 +104,10 @@ panel_iframe:
     title: Configurator
     icon: mdi:wrench
     url: http://hassio.local:3218
-#    url: http://vicbt.dnsalias.com:3218
 
 octoprint:
   host: 192.168.1.199
-  api_key: 19E8ED52C09340589D5BAA844FC48884
+  api_key: !secret octoapi
   bed: true
   number_of_tools: 1
   sensors:
@@ -118,7 +116,7 @@ octoprint:
 
 weather:
   - platform: openweathermap
-    api_key: 7347768b4a74f8107e5dc9fac948e017    
+    api_key: !secret owmapi
   
 mqtt:
   broker: 192.168.1.90
