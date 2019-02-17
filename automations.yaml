@@ -353,7 +353,7 @@
     to: 'on'
   condition:
   - condition: template
-    value_template: '{{ states.calendar.steve_menheere.attributes.message == ''Greenwaste''
+    value_template: '{{ states.calendar.steve_menheere.attributes.message == ''Green Waste''
       }}'
   action:
   - data:

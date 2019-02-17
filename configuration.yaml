@@ -37,10 +37,7 @@ google:
 
 # Uncomment this if you are using SSL/TLS, running in Docker container, etc.
 http:
-<<<<<<< HEAD
   base_url: vicbt.duckdns.org
-=======
->>>>>>> 7734508f2d52f01504376037aeb2432d07dd0e7a
   api_password: !secret api_password
 #  ssl_certificate: /ssl/fullchain.pem
 #  ssl_key: /ssl/privkey.pem
@@ -137,11 +134,7 @@ panel_iframe:
   configurator:
     title: Configurator
     icon: mdi:wrench
-<<<<<<< HEAD
     url: http://192.168.1.90:3218
-=======
-    url: http://hassio.local:3218
->>>>>>> 7734508f2d52f01504376037aeb2432d07dd0e7a
 
 octoprint:
   host: 192.168.1.199
@@ -154,11 +147,7 @@ octoprint:
 
 weather:
   - platform: openweathermap
-<<<<<<< HEAD
     api_key: !secret owmapi   
-=======
-    api_key: !secret owmapi
->>>>>>> 7734508f2d52f01504376037aeb2432d07dd0e7a
   
 mqtt:
   broker: 192.168.1.90
