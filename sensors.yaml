@@ -29,19 +29,39 @@
   state_topic: "power/voltage"
   unit_of_measurement: "V"
   expire_after: 60
-### Lounge Temp ###
 - platform: mqtt
-  name: "Lounge Temp."
+  name: "Power Input"
+  state_topic: "power/input"
+  unit_of_measurement: "W"
+  expire_after: 60
+- platform: mqtt
+  name: "Power Output"
+  state_topic: "power/output"
+  unit_of_measurement: "W"
+  expire_after: 60
+- platform: mqtt
+  name: "Power Temperature"
+  state_topic: "power/temp"
   unit_of_measurement: "°C"
-  state_topic: "Nodemcu1/fromesp/auto_temperature"
+  expire_after: 60
 
-- platform: mqtt
-  name: Laundry Ceiling Temperature
-  state_topic: skylight/sensor/laundry_ceiling_temperature/state
-  unit_of_measurement: "°C"
-  availability_topic: skylight/status
-- platform: mqtt
-  name: Laundry Ceiling Humidity
-  unit_of_measurement: "%"
-  state_topic: skylight/sensor/laundry_ceiling_humidity/state
-  availability_topic: skylight/status
+
+- platform: time_date
+  display_options:
+    - 'time'  
+
+
+- platform: scrape
+  resource: http://www.bom.gov.au/vic/forecasts/melbourne.shtml
+  name: Melbourne Forecast Summary
+  select: ".main .forecast p"
+  value_template: '{{ value | truncate(255) }}'
+  # Request every hour
+  scan_interval: 3600
+  headers:
+    User-Agent: Mozilla/5.0
+- platform: scrape
+  name: BOM Tweet
+  resource: https://twitter.com/BOM_VIC
+  select: ".js-tweet-text-container .tweet-text"
+  

@@ -4,7 +4,8 @@ lounge_room:
   entities:
     - light.lounge_1
     - light.lounge_2
-    - sensor.lounge_temp
+    - sensor.lounge_temperature
+    - sensor.multisensor_2_brightness
     
 power:
    name: Power
@@ -33,10 +34,23 @@ environment:
   name: Environment
   control: hidden
   entities:
+    - sensor.bom_geelong_air_temp_c
     - sensor.bom_geelong_wind_speed_kmh
     - sensor.bom_geelong_feels_like_c
     - sensor.bom_geelong_relative_humidity
-    - sensor.bom_geelong_air_temp_c
-    - sensor.lounge_temp
+    - sensor.lounge_temperature
     - sensor.laundry_ceiling_temperature
+    - sensor.d1mini2_temperature
+    - sensor.power_temperature
     - sensor.laundry_ceiling_humidity
+    - sensor.d1mini2_humidity
+
+resets:
+  name: Reset switches
+  control: hidden
+  entities:
+    - switch.laundry_restart
+    - switch.lounge_display_restart
+    - switch.rooftemp_restart
+    - switch.multisensor_2_restart
+    - switch.timer_restart

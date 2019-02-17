@@ -2,8 +2,8 @@ homeassistant:
   # Name of the location where Home Assistant is running
   name: Home
   # Location required to calculate the time the sun rises and sets
-  latitude: -38.161744
-  longitude: 144.55609
+  latitude: !secret lat
+  longitude: !secret lon
   # Impacts weather/sunrise data (altitude above sea level in meters)
   elevation: 0
   # metric for Metric, imperial for Imperial
@@ -21,14 +21,27 @@ homeassistant:
 
 # Enables the frontend
 frontend:
+  javascript_version: latest
 
 # Enables configuration UI
 config:
 
+#lovelace:
+#  mode: yaml
+  
+system_health:
+
+google:
+  client_id: 120646925227-ke8u4git14qah85de8k5jc6ltujfb91b.apps.googleusercontent.com
+  client_secret: K3a6CFTN4d6zC3cX1mJlUDpl
+
 # Uncomment this if you are using SSL/TLS, running in Docker container, etc.
 http:
-#   base_url: ha.vicbt.dnsalias.com:8123
+  base_url: vicbt.duckdns.org
   api_password: !secret api_password
+#  ssl_certificate: /ssl/fullchain.pem
+#  ssl_key: /ssl/privkey.pem
+
 
 # Checks for available updates
 # Note: This component will send some information about your system to
@@ -38,12 +51,13 @@ http:
 updater:
   # Optional, allows Home Assistant developers to focus on popular components.
   # include_used_components: true
-
+ 
 # Discover some devices automatically
 discovery:
   ignore:
     - plex_mediaserver
-
+    - igd
+#    - esphome
 
 # Allows you to issue voice commands from the frontend in enabled browsers
 conversation:
@@ -57,37 +71,42 @@ logbook:
     entities:
       - sensor.power_usage
       - sensor.power_export
-      - sensor.ceiling_temperature
-      - sensor.ceiling_humidity
+      - sensor.power_input
+      - sensor.power_output
+      - sensor.time
+      - sensor.voltage
+      - sensor.power_solar
+      - binary_sensor.multisensor_motion
+      - binary_sensor.upstairs_hall_motion
       
 # Enables a map showing the location of tracked devices
 map:
 
 zone:
   - name: Home
-    latitude: -38.161744
-    longitude: 144.55609
+    latitude: !secret lat
+    longitude: !secret lon
     radius: 150
     icon: mdi:home
   - name: Mums
-    latitude: -38.192840
-    longitude: 144.461258
-    radius: 100
+    latitude: !secret mlatitude
+    longitude: !secret mlongitude
+    radius: 150
     icon: mdi:home-outline
   - name: Kats
-    latitude: -38.171471
-    longitude: 144.417805
+    latitude: !secret klatitude
+    longitude: !secret klongitude
     radius: 100
     icon: mdi:home-outline
   - name: Brians
-    latitude: -38.134063
-    longitude: 144.327995
+    latitude: !secret blatitude
+    longitude: !secret blongitude
     radius: 100
     icon: mdi:home-outline
   - name: Staceys
-    latitude: -37.855373
-    longitude: 145.267722
-    radius: 100
+    latitude: !secret slatitude
+    longitude: !secret slongitude
+    radius: 150
     icon: mdi:home-outline
 
 # Track the sun
@@ -100,16 +119,26 @@ tts:
 # Cloud
 #cloud:
 
+#climate:
+#  - platform: generic_thermostat
+#    name: Lounge
+#    heater: switch.moretti_fan
+#    target_sensor: sensor.lounge_temperature
+#    max_temp: 28
+#    min_temp: 10
+#    cold_tolerance: 0.8
+#    hot_tolerance: 0.8
+#    initial_operation_mode: "off"
+    
 panel_iframe:
   configurator:
     title: Configurator
     icon: mdi:wrench
-    url: http://hassio.local:3218
-#    url: http://vicbt.dnsalias.com:3218
+    url: http://192.168.1.90:3218
 
 octoprint:
   host: 192.168.1.199
-  api_key: 19E8ED52C09340589D5BAA844FC48884
+  api_key: !secret octoapi
   bed: true
   number_of_tools: 1
   sensors:
@@ -118,53 +147,17 @@ octoprint:
 
 weather:
   - platform: openweathermap
-    api_key: 7347768b4a74f8107e5dc9fac948e017    
+    api_key: !secret owmapi   
   
 mqtt:
   broker: 192.168.1.90
-  discovery: false
+  discovery: true
 
   
 device_tracker:
   - platform: fritz
   
 switch:
-  - platform: mqtt
-    name: "Timer 1"
-    command_topic: "Timer1/toesp"
-    payload_on: "{out4:1}"
-    payload_off: "{out4:0}"
-  - platform: mqtt
-    name: "SolarDisplayBlue"
-    icon: mdi:led-off
-    control: hidden
-    command_topic: "Nodemcu1/toesp"
-    payload_on: "{out12:1}"
-    payload_off: "{out12:0}"
-  - platform: mqtt
-    name: "SolarDisplayYellow"
-    icon: mdi:led-off
-    command_topic: "Nodemcu1/toesp"
-    payload_on: "{out4:1}"
-    payload_off: "{out4:0}"
-  - platform: mqtt
-    name: "SolarDisplayRed"
-    icon: mdi:led-off
-    command_topic: "Nodemcu1/toesp"
-    payload_on: "{out5:1}"
-    payload_off: "{out5:0}"
-  - platform: mqtt
-    name: Stair Lights
-    icon: mdi:lightbulb
-    state_topic: stairs/switch/stair_lights/state
-    command_topic: stairs/switch/stair_lights/command
-    availability_topic: stairs/status    
-  - platform: mqtt
-    name: Laundry Light
-    icon: mdi:lightbulb
-    state_topic: skylight/switch/laundry_light/state
-    command_topic: skylight/switch/laundry_light/command
-    availability_topic: skylight/status    
   - platform: broadlink
     host: 192.168.1.24
     mac: '78:0F:77:5A:E9:87'
@@ -174,10 +167,12 @@ switch:
         friendly_name: "Lounge Fan"
         command_on: JgDUASgQJxAMKygQKA8MLAwrDCwMKwwsKA8MAAEPKBAnEAwrKQ8pDgwsDCsMLAwrDCwoDwwAAQ8oDygQDCsoECgPDCwNKgwsDCsMLCgPDAABDygPKBAMKygQKQ4MLAwrDSsMKw0rKA8MAAEPKQ4oEAwrKBAnEAwsDCsMLA0qDSsnEAwAAQ8oDygQDCsoECgPDCwMKwwsDCsMLCcQDAABDygPKBAMKygQJxAMLAwrDSsNKg0rJxAMAAEPKQ4oEAwrKBAoDwwsDCsMLAwrDCwnEAwAAQ8oDygQDCsoECgPDCwNKgwsDCsMLCcQDAABDykOKQ8MKygQJxAMLA0qDCwMKwwrKBAMAAEPKA8pDwwrKBAnEAwsDSoNKg4qDSooEAwAAQ8oDykPDCsoECcQDCsNKw0qDSsMKygQDAABDycQKBANKigPKBAMKw0rDSoMLAwrKBAMAAEOKBAoDw0rKA8oEA0qDCwMKwwsDSopDwwAAQ4oECkODCwoDygQDCsMLA0qDCwMKykODQABDikPJxAMLCgPKA8NKwwrDSsNKg0rKA8MAAEPKA8oEAwrKBAoDwwsDCsMLAwrDSsoDwwAAQ8oDygQDCsoECgPDCwMKwwsDCsMKygQDAANBQAAAAA==
         command_off: JgCCASgQKA8MLCgPKBAMKwwsDCsMLAwrDCwn8ygQKA8MLCgPKBAMKwwsDCsMLAwrDCwn8ygQKA8MLCgPKA8NKwwrDSsMKw0rDCso8ygQJxANKigQKA8NKwwrDSsMKw0rDCso8ygPKBAMKygQKA8MLAwrDCwOKQ4qDCso8ykOKBAMKygQKA8MLA0qDCwMKwwsDCso8ygPKBAMKygQJxAMKw0rDCsNKwwrDSso8ycQKA8NKygPKBAMKwwsDCsMLAwrDCwo8igQKA8MLCgPKBAMKwwsDCsMLAwrDCwo8igQKA8MLCgPKBAMKwwsDCsMLAwrDCso8ygQJxAMLCcQKA8NKwwrDSsMKw0rDCso8ygQJxAMKygQKA8MLA4pDCwMKwwsDCso8ygPKg4MKygQKA8MLAwrDCwMKw0rDCso8ygPKBAMKygQJxAMKw0rDCsNKwwrDSso8ycQKA8NKygPKBAMKwwsDCsMLAwrDCwo8igQKA8MLCgPKBAMKwwsDCsMLAwrDCsoAA0FAAAAAAAA==
-      moretti_fan_swing_lamp:
-        friendly_name: "Lounge fan Swing mode (on) Lamp (off)"
+      moretti_fan_swing:
+        friendly_name: "Lounge fan Swing mode"
         command_on: JgCgASgQJxAMKygQKA8MLAwrKBAMKwwsDCsMAAEPKA8oEAwrKBAoDwwsDCsoEAwrDCwMKwwAAQ8oDygQDCsoECgPDCwMKygQDCsMLAwrDAABDygPKBAMKygQKA8MLAwrKBAMKwwsDCsMAAEPKA8oEAwrKBAnEAwsDCsoEAwrDCwMKwwAAQ8oDygQDCsoECgPDCwMKygQDCsMLAwrDAABDygPKBAMKygQJxAMLAwrKA8NKwwrDSsMAAEPJxAoEAwrKBAnEAwrDSsoDw0rDCsNKwwAAQ8oDygQDCsoECcQDCsNKygPDSsMKwwsDAABDygPKBAMKygQJxAMKw0rKA8MLAwrDCwMAAEPJxAoDw0rKA8oEAwrDCwoDwwsDCsMLAwAAQ4oECgPDCwoDygQDCsMLCcQDCwMKwwsDAABDigQKA8MLCgPKBAMKwwsJxAMKw0rDCsNAAEOKBAnEAwsKA8oDwwsDCsoEAwrDCwMKwwAAQ8oDygQDCsoECgPDCwMKygQDCsMKw0rDAABDycQKBAMKygPKBAMKw0rKA8MLAwrDCwMAA0FAAAAAAAAAAA==
-        command_off: JgAiASgPKBANKikPKA8oEA0qDSsMKw0qKQ8o8ygPKBAMKykPJxAoDw0rDCsMLAwrKBAo8ycQKA8NKygPKQ8pDgwsDSoMLAwrKBAo8igQKA8MLCgPKQ8oDw0rDSoMLAwrKBAn8ykPJxANKycQKA8oEAwrDSsNKgwsKA8o8ygPKBAMKykPKA8oEA0qDSsNKg0rJxAo8ycQKBAMKygPKQ8oDw0rDSoMLAwrKBAn8ykPKA8MLCcQKBAnEAwsDCsMKw4qKA8p8ikPJxAMKygQKA8pDwwrDSsNKgwsJxAo8ygPKQ8MKykPKA8oDw0rDSoOKgwrKBAp8SgQKA8NKygPKBAnEAwsDCsMLA0qKA8o8ykPJxAMKygQKA8pDw0qDSsMKw0rKA8pAA0FAAAAAAAA==
+      moretti_fan_lamp:
+        friendly_name: "Lounge fan lights"
+        command_on: JgAiASgPKBANKikPKA8oEA0qDSsMKw0qKQ8o8ygPKBAMKykPJxAoDw0rDCsMLAwrKBAo8ycQKA8NKygPKQ8pDgwsDSoMLAwrKBAo8igQKA8MLCgPKQ8oDw0rDSoMLAwrKBAn8ykPJxANKycQKA8oEAwrDSsNKgwsKA8o8ygPKBAMKykPKA8oEA0qDSsNKg0rJxAo8ycQKBAMKygPKQ8oDw0rDSoMLAwrKBAn8ykPKA8MLCcQKBAnEAwsDCsMKw4qKA8p8ikPJxAMKygQKA8pDwwrDSsNKgwsJxAo8ygPKQ8MKykPKA8oDw0rDSoOKgwrKBAp8SgQKA8NKygPKBAnEAwsDCsMLA0qKA8o8ykPJxAMKygQKA8pDw0qDSsMKw0rKA8pAA0FAAAAAAAA==
 
 input_boolean:
   house_occupied:
@@ -189,7 +184,13 @@ input_boolean:
   maria_home:
     name: "Maria Home"
     initial: off
-
+  power_available:
+    name: "Power Available"
+    initial: off
+  curb_power:
+    name: "Curb your power event"
+    initial: off
+    
 input_select:
   heater_mode:
     name: Heating Mode
@@ -199,6 +200,70 @@ input_select:
       - "Cool"
     initial: "Off"
     icon: mdi:snowflake
+  curb_event_start:
+    name: Curb Event Start Time
+    options:
+      - "00:00"
+      - "01:00"
+      - "02:00"
+      - "03:00"
+      - "04:00"
+      - "05:00"
+      - "06:00"
+      - "07:00"
+      - "08:00"
+      - "09:00"
+      - "10:00"
+      - "11:00"
+      - "12:00"
+      - "13:00"
+      - "14:00"
+      - "15:00"
+      - "16:00"
+      - "17:00"
+      - "18:00"
+      - "19:00"
+      - "20:00"
+      - "21:00"
+      - "21:30"
+      - "22:00"
+      - "22:30"
+      - "23:00"
+  curb_event_end:
+    name: Curb Event End Time
+    options:
+      - "00:00"
+      - "01:00"
+      - "02:00"
+      - "03:00"
+      - "04:00"
+      - "05:00"
+      - "06:00"
+      - "07:00"
+      - "08:00"
+      - "09:00"
+      - "10:00"
+      - "11:00"
+      - "12:00"
+      - "13:00"
+      - "14:00"
+      - "15:00"
+      - "16:00"
+      - "17:00"
+      - "18:00"
+      - "19:00"
+      - "20:00"
+      - "21:00"
+      - "22:00"
+      - "23:00"
+
+binary_sensor:    
+  - platform: template
+    sensors:
+      curb_event:
+        value_template: '{{states.input_select.curb_event_start.state <= states.sensor.time.state and states.input_select.curb_event_end.state >= states.sensor.time.state}}'
+        friendly_name: 'Curb Event'  
+
 
 notify:
   - platform: kodi
@@ -207,6 +272,9 @@ notify:
     port: 9090
     username: KodiRemote
     password: !secret kodi_password
+
+ifttt:
+  key: R_2iaaJbd-_SvbaU7se-W
 
 group: !include groups.yaml
 automation: !include automations.yaml

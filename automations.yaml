@@ -76,18 +76,19 @@
       topic: ha_start
     service: mqtt.publish
 - id: '1543929735147'
-  alias: Skylight On
+  alias: Solar power on
   trigger:
   - above: '100'
     entity_id: sensor.power_solar
+    for: 0:02:00
     platform: numeric_state
   condition: []
   action:
   - data:
-      entity_id: switch.solar_skylight
-    service: switch.turn_on
+      entity_id: input_boolean.power_available
+    service: input_boolean.turn_on
 - id: '1543929843183'
-  alias: Skylight Off
+  alias: Solar power off
   trigger:
   - below: '95'
     entity_id: sensor.power_solar
@@ -95,8 +96,8 @@
   condition: []
   action:
   - data:
-      entity_id: switch.solar_skylight
-    service: switch.turn_off
+      entity_id: input_boolean.power_available
+    service: input_boolean.turn_off
 - id: '1544163642043'
   alias: Maria Home
   trigger:
@@ -125,3 +126,239 @@
   - data:
       entity_id: input_boolean.maria_home
     service: input_boolean.turn_off
+- id: '1544165643370'
+  alias: Steve Away
+  trigger:
+  - entity_id: device_tracker.iphone
+    from: home
+    platform: state
+    to: not_home
+  condition: []
+  action:
+  - data:
+      entity_id: input_boolean.steve_home
+    service: input_boolean.turn_off
+- id: '1544165700578'
+  alias: Steve Home
+  trigger:
+  - entity_id: device_tracker.iphone
+    from: not_home
+    platform: state
+    to: home
+  - entity_id: device_tracker.iphone
+    event: enter
+    platform: zone
+    zone: zone.home
+  condition: []
+  action:
+  - data:
+      entity_id: input_boolean.steve_home
+    service: input_boolean.turn_on
+- id: '1544249456811'
+  alias: Visitors
+  trigger:
+  - entity_id: device_tracker.briansiphone
+    from: not_home
+    platform: state
+    to: home
+  - entity_id: device_tracker.karindasiphone
+    from: not_home
+    platform: state
+    to: home
+  - entity_id: device_tracker.staceysphone
+    from: not_home
+    platform: state
+    to: home
+  - entity_id: device_tracker.kattasiphone
+    from: not_home
+    platform: state
+    to: home
+  condition: []
+  action:
+  - data:
+      message: You have visitors
+      title: Notice
+    service: notify.lounge
+  - data:
+      entity_id: input_boolean.house_occupied
+    service: input_boolean.turn_on
+- id: '1544249921726'
+  alias: House Empty
+  trigger:
+  - entity_id: group.all_devices
+    from: home
+    platform: state
+    to: not_home
+  condition: []
+  action:
+  - data:
+      entity_id: input_boolean.house_occupied
+    service: input_boolean.turn_off
+- id: '1544355455708'
+  alias: Bedtime
+  trigger:
+    platform: webhook
+    webhook_id: gnight
+  condition: []
+  action:
+  - data:
+      payload: '1'
+      topic: ifttt/goodnight
+    service: mqtt.publish
+- id: '1544406442141'
+  alias: IFTTT Webhook Actions
+  trigger:
+  - platform: webhook
+    webhook_id: json_service
+  condition: []
+  action:
+  - data_template:
+      entity_id: '{{ trigger.json.entity_id }}'
+    service_template: '{{ trigger.json.service }}'
+- id: '1546162484964'
+  alias: Lounge Lights
+  trigger:
+  - above: '0.58'
+    entity_id: sensor.multisensor_2_brightness
+    platform: numeric_state
+  condition:
+  - condition: state
+    entity_id: input_boolean.house_occupied
+    state: 'on'
+  action:
+  - data:
+      brightness: '190'
+      entity_id: light.lounge_1, light.lounge_2
+      kelvin: '3500'
+      power: 'true'
+      transition: '5'
+    service: light.lifx_set_state
+  - data:
+      entity_id: automation.lounge_lights
+    service: automation.turn_off
+- id: '1546162657196'
+  alias: Enable Light sensor
+  trigger:
+  - at: '15:00'
+    platform: time
+  condition: []
+  action:
+  - data:
+      entity_id: automation.lounge_lights
+    service: automation.turn_on
+- id: '1547814897507'
+  alias: Disable light sensor
+  trigger:
+  - at: '23:00'
+    platform: time
+  condition: []
+  action:
+  - data:
+      entity_id: automation.lounge_lights
+    service: automation.turn_off
+- id: '15999845'
+  alias: Curb Event Start
+  trigger:
+  - entity_id: binary_sensor.curb_event
+    from: 'off'
+    platform: state
+    to: 'on'
+  action:
+  - data:
+      entity_id: input_boolean.curb_power
+    service: input_boolean.turn_on
+- id: '15999847'
+  alias: Curb Event End
+  trigger:
+  - entity_id: binary_sensor.curb_event
+    from: 'on'
+    platform: state
+    to: 'off'
+  action:
+  - data:
+      entity_id: input_boolean.curb_power
+    service: input_boolean.turn_off
+  - data:
+      entity_id: input_select.curb_event_start
+      option: 00:00
+    service: input_select.select_option
+  - data:
+      entity_id: input_select.curb_event_end
+      option: 00:00
+    service: input_select.select_option
+- id: '1548633966688'
+  alias: Hall light on
+  trigger:
+  - at: '22:00:00'
+    platform: time
+  condition:
+  - condition: state
+    entity_id: input_boolean.house_occupied
+    state: 'on'
+  action:
+  - data:
+      brightness: '25'
+      entity_id: light.yeelight_white_f0b429a8cf75
+      transition: '5'
+    service: light.turn_on
+- id: '1548634179485'
+  alias: Hall light off
+  trigger:
+  - at: 01:00:10
+    platform: time
+  condition: []
+  action:
+  - data:
+      entity_id: light.yeelight_white_f0b429a8cf75
+    service: light.turn_off
+- id: '1549357119469'
+  alias: Dial-a-Garbo due
+  trigger:
+  - entity_id: calendar.steve_menheere
+    platform: state
+    to: 'on'
+  condition:
+  - condition: template
+    value_template: '{{ states.calendar.steve_menheere.attributes.message == ''Dial-a-Garbo''
+      }}'
+  action:
+  - data:
+      brightness: '50'
+      color_name: blue
+      entity_id: light.lounge_1
+      power: 'true'
+    service: light.lifx_set_state
+- id: '1549357119479'
+  alias: Recycling week
+  trigger:
+  - entity_id: calendar.steve_menheere
+    platform: state
+    to: 'on'
+  condition:
+  - condition: template
+    value_template: '{{ states.calendar.steve_menheere.attributes.message == ''Recycling''
+      }}'
+  action:
+  - data:
+      brightness: '50'
+      color_name: yellow
+      entity_id: light.lounge_1
+      power: 'true'
+    service: light.lifx_set_state
+- id: '1549357119489'
+  alias: Greenwaste week
+  trigger:
+  - entity_id: calendar.steve_menheere
+    platform: state
+    to: 'on'
+  condition:
+  - condition: template
+    value_template: '{{ states.calendar.steve_menheere.attributes.message == ''Greenwaste''
+      }}'
+  action:
+  - data:
+      brightness: '50'
+      color_name: green
+      entity_id: light.lounge_1
+      power: 'true'
+    service: light.lifx_set_state
