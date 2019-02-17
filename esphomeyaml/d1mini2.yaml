@@ -1,0 +1,35 @@
+esphomeyaml:
+  name: d1mini2
+  platform: ESP8266
+  board: d1_mini
+
+wifi:
+  ssid: 'Homeair2'
+  password: 'mariaandsteve'
+  domain: '.fritz.box'
+
+
+api:
+  
+# Enable logging
+logger:
+
+ota:
+
+i2c:
+  sda: 4
+  scl: 5
+  scan: False
+
+sensor:
+  - platform: sht3xd
+    temperature:
+      name: "D1Mini2 Temperature"
+    humidity:
+      name: "D1Mini2 Humidity"
+    address: 0x45
+    update_interval: 15s
+
+switch:
+  - platform: restart
+    name: "D1Mini2 Restart"

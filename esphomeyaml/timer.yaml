@@ -1,0 +1,23 @@
+esphomeyaml:
+  name: timer
+  platform: ESP8266
+  board: d1_mini
+
+wifi:
+  ssid: 'Homeair2'
+  password: 'mariaandsteve'
+  domain: '.fritz.box'
+
+api:
+
+# Enable logging
+logger:
+
+switch:
+  - platform: gpio
+    name: Timer
+    pin: D1
+  - platform: restart
+    name: "Timer Restart"
+
+ota:

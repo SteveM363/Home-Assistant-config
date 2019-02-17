@@ -1,0 +1,37 @@
+esphomeyaml:
+  name: multisensor1
+  platform: ESP32
+  board: mhetesp32devkit
+
+wifi:
+  ssid: 'Homeair2'
+  password: 'mariaandsteve'
+  domain: '.fritz.box'
+
+api:
+
+# Enable logging
+logger:
+
+ota:
+
+sensor:
+  - platform: dht
+    pin: GPIO13
+    model: dht22
+    temperature:
+      name: "Upstairs Hall Temperature"
+    humidity:
+      name: "Upstairs Hall Humidity"
+    update_interval: 60s
+ 
+binary_sensor:
+  - platform: gpio
+    pin: GPIO15
+    name: "Upstairs Hall Motion"
+    device_class: motion
+
+switch:
+  - platform: restart
+    name: "Multisensor 1 Restart"
+       

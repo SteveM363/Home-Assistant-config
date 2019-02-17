@@ -1,0 +1,40 @@
+esphomeyaml:
+  name: hall
+  platform: ESP8266
+  board: nodemcuv2
+
+wifi:
+  ssid: 'Homeair2'
+  password: 'mariaandsteve'
+  manual_ip:
+    static_ip: 192.168.1.145
+    gateway: 192.168.1.255
+    subnet: 255.255.255.0
+
+# Enable logging
+logger:
+
+# Enable Home Assistant API
+api:
+
+ota:
+
+sensor:
+  - platform: dht
+    pin: D7
+    model: dht22
+    temperature:
+      name: "Upstairs Hall Temperature"
+    humidity:
+      name: "Upstairs Hall Humidity"
+      
+binary_sensor:
+  - platform: gpio
+    pin: D5
+    name: "Upstairs Hall Motion"
+    device_class: motion
+      
+
+switch:
+  - platform: restart
+    name: "Upstairs Hall Restart"

@@ -1,0 +1,39 @@
+esphomeyaml:
+  name: multisensor2
+  platform: ESP8266
+  board: nodemcuv2
+
+wifi:
+  ssid: 'Homeair2'
+  password: 'mariaandsteve'
+  domain: '.fritz.box'
+  
+api:
+
+# Enable logging
+logger:
+
+ota:
+
+sensor:
+  - platform: adc
+    pin: A0
+    name: "Multisensor 2 Brightness"
+  - platform: dht
+    pin: D2
+    model: dht22
+    temperature:
+      name: "Multisensor 2 Temperature"
+    humidity:
+      name: "Multisensor 2 Humidity"
+      
+binary_sensor:
+  - platform: gpio
+    pin: D5
+    name: "Multisensor Motion"
+    device_class: motion
+      
+
+switch:
+  - platform: restart
+    name: "Multisensor 2 Restart"

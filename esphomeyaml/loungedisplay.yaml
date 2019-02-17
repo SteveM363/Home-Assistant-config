@@ -1,0 +1,46 @@
+esphomeyaml:
+  name: loungedisplay
+  platform: ESP8266
+  board: nodemcuv2
+
+wifi:
+  ssid: 'Homeair2'
+  password: 'mariaandsteve'
+  domain: '.fritz.box'
+
+
+api:
+
+# Enable logging
+logger:
+
+ota:
+
+
+
+switch:
+  - platform: gpio
+    pin: D1
+    name: "SolarDisplayYellow"
+    icon: mdi:led-off
+  - platform: gpio
+    pin: D6
+    name: "SolarDisplayBlue"
+    icon: mdi:led-off
+  - platform: gpio
+    pin: D2
+    name: "SolarDisplayRed"
+    icon: mdi:led-off
+  - platform: restart
+    name: "Lounge Display Restart"
+
+dallas:
+  - pin: D5
+
+
+
+sensor:
+  - platform: dallas
+    address: 0xCA000006C797A028
+    name: "Lounge Temperature"
+    unit_of_measurement: "°C"

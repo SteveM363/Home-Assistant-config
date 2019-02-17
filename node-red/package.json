@@ -1,0 +1,11 @@
+{
+    "name": "node-red-project",
+    "description": "A Node-RED Project",
+    "version": "0.0.1",
+    "private": true,
+    "dependencies": {
+        "node-red-contrib-esplogin": "~1.3.7",
+        "node-red-contrib-ramp-thermostat": "~0.8.1",
+        "node-red-node-emoncms": "~0.2.1"
+    }
+}
